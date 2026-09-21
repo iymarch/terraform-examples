@@ -9,3 +9,7 @@ output "datastore_flavors" {
 output "postgres_extentions" {
   value = data.selectel_dbaas_available_extension_v1.pg_extensions.available_extensions
 }
+
+output "postgres_user_setting_parameters" {
+  value = data.selectel_dbaas_user_setting_parameter_v1.user_setting_parameters.user_setting_parameters
+}

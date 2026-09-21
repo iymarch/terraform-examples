@@ -47,3 +47,24 @@ data "selectel_dbaas_available_extension_v1" "pg_extensions" {
   project_id = var.project_id
   region     = var.region
 }
+
+#########################################################
+# Каталог настроек пользователя PostgreSQL (по типу кластера)
+#########################################################
+
+data "selectel_dbaas_datastore_type_v1" "postgresql" {
+  project_id = var.project_id
+  region     = var.region
+  filter {
+    engine  = "postgresql"
+    version = "12"
+  }
+}
+
+data "selectel_dbaas_user_setting_parameter_v1" "user_setting_parameters" {
+  project_id = var.project_id
+  region     = var.region
+  filter {
+    datastore_type_id = data.selectel_dbaas_datastore_type_v1.postgresql.datastore_types[0].id
+  }
+}
