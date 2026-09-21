@@ -99,9 +99,19 @@ resource "selectel_dbaas_user_v1" "user_1" {
 
   # Настройки роли PostgreSQL, не config кластера.
   settings {
-    conn_limit        = 20
-    statement_timeout = 5000
-    login             = true
+    conn_limit                          = 20
+    login                               = true
+    statement_timeout                   = 5000
+    lock_timeout                        = 1000
+    idle_in_transaction_session_timeout = 60000
+    idle_session_timeout                = 0
+    temp_file_limit                     = -1
+    work_mem                            = 4096
+    log_min_duration_statement          = -1
+    default_transaction_isolation       = "read committed"
+    log_statement                       = "none"
+    synchronous_commit                  = "on"
+    default_transaction_read_only       = false
   }
 }
 
