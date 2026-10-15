@@ -5,9 +5,7 @@
 terraform {
   required_providers {
     selectel = {
-      source = "selectel/selectel"
-      # data sources *_user_setting_parameter_v1 / *_roles_v1
-      # появились в 9.3.0
+      source  = "selectel/selectel"
       version = "~> 9.3.0"
     }
   }
@@ -54,9 +52,6 @@ data "selectel_dbaas_available_extension_v1" "pg_extensions" {
 # Каталог настроек пользователя PostgreSQL (по типу кластера)
 #########################################################
 
-# Тип кластера PostgreSQL 12. Data sources каталога настроек и ролей
-# фильтруются только по datastore_type_id, поэтому сначала находим
-# тип кластера по engine и version.
 data "selectel_dbaas_datastore_type_v1" "postgresql" {
   project_id = var.project_id
   region     = var.region
