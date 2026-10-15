@@ -1,6 +1,6 @@
 # Получение списка переменных сервера
 
-Просмотр значений с апи в регионе — список поддерживаемых баз данных и версий, список flavor, список расширений postgres, каталог настроек пользователя PostgreSQL 12 (`selectel_dbaas_user_setting_parameter_v1` по `datastore_type_id`).
+Просмотр значений с апи в регионе — список поддерживаемых баз данных и версий, список flavor, список расширений postgres, каталог настроек пользователя PostgreSQL 12 (`selectel_dbaas_user_setting_parameter_v1` по `datastore_type_id`) и каталог предопределённых ролей (`selectel_dbaas_roles_v1` по `datastore_type_id`).
 
 # Запуск
 

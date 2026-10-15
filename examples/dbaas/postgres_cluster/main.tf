@@ -87,6 +87,26 @@ resource "selectel_dbaas_datastore_v1" "datastore_1" {
 }
 
 ###############################
+# Поиск ролей пользователя
+###############################
+
+data "selectel_dbaas_roles_v1" "user_roles" {
+  project_id = var.project_id
+  region     = var.region
+
+  filter {
+    datastore_type_id = data.selectel_dbaas_datastore_type_v1.dt.datastore_types[0].id
+  }
+}
+
+locals {
+  # Карта «имя роли → ID роли» для выбранного типа кластера.
+  role_ids = {
+    for role in data.selectel_dbaas_roles_v1.user_roles.roles : role.name => role.id
+  }
+}
+
+###############################
 # Создание пользователя БД
 ###############################
 
@@ -97,22 +117,32 @@ resource "selectel_dbaas_user_v1" "user_1" {
   name         = "user"
   password     = "secret"
 
-  # Настройки роли PostgreSQL, не config кластера.
-  settings {
-    conn_limit                          = 20
-    login                               = true
-    statement_timeout                   = 5000
-    lock_timeout                        = 1000
-    idle_in_transaction_session_timeout = 60000
-    idle_session_timeout                = 0
-    temp_file_limit                     = -1
-    work_mem                            = 4096
-    log_min_duration_statement          = -1
+  # Настройки пользователя PostgreSQL.
+  # Набор ключей зависит от типа кластера, каталог параметров можно получить
+  # data source-ом selectel_dbaas_user_setting_parameter_v1 (см. пример get_params).
+  # Значения передаются строками и приводятся к нужному типу автоматически.
+  settings = {
+    conn_limit                          = "20"
+    login                               = "true"
+    bypassrls                           = "false"
+    statement_timeout                   = "5000"
+    lock_timeout                        = "1000"
+    idle_in_transaction_session_timeout = "60000"
+    temp_file_limit                     = "-1"
+    work_mem                            = "4096"
+    log_min_duration_statement          = "-1"
     default_transaction_isolation       = "read committed"
     log_statement                       = "none"
     synchronous_commit                  = "on"
-    default_transaction_read_only       = false
+    default_transaction_read_only       = "false"
   }
+
+  # Предопределённые роли пользователя PostgreSQL.
+  # Доступные роли можно получить data source-ом selectel_dbaas_roles_v1.
+  roles = [
+    local.role_ids["pg_read_all_stats"],
+    local.role_ids["pg_signal_backend"],
+  ]
 }
 
 ####################################

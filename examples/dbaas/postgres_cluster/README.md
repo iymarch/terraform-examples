@@ -3,11 +3,13 @@
 Создание Кластера Postgres 12 в уже существующей сети с тремя нодами и с произвольной конфигурацией нод.  
 Для работы с существующими сетями будет использоваться провайдер `openstack`. Кластер будет создан в сети с именем *nat* - задаётся в vars.tf.
 
-У пользователя задаются все PostgreSQL role settings из каталога — это настройки роли, не `config` кластера. Блок `settings` есть только у PostgreSQL / 1C / TimescaleDB; в примерах MySQL и Redis его нет.
+При создании пользователь получает настройки и роли.
 
-Набор ключей зависит от типа кластера (версия движка). Каталог можно получить data source `selectel_dbaas_user_setting_parameter_v1` с фильтром `datastore_type_id` — как в примере `get_params`. Не указанные ключи не меняются; чтобы сбросить параметр, уберите его из блока `settings`.
+Настройки задаются аргументом `settings` — картой «имя параметра → значение». Значения передаются строками и приводятся к нужному типу автоматически. В примере перечислены все параметры из каталога для PostgreSQL 12; для PostgreSQL 14 и новее в каталоге дополнительно есть `idle_session_timeout`. Каталог параметров для нужного типа кластера можно получить data source-ом `selectel_dbaas_user_setting_parameter_v1` с фильтром `datastore_type_id` — как в примере `get_params`. Ключ, убранный из `settings`, сбрасывается к значению по умолчанию из каталога. Аргумент `settings` доступен для кластеров PostgreSQL, 1C и TimescaleDB; в примерах MySQL и Redis его нет.
 
-Нужна версия провайдера Selectel с поддержкой `settings` у `selectel_dbaas_user_v1`.
+Роли задаются аргументом `roles` — списком ID предопределённых ролей. ID и имена доступных ролей можно получить data source-ом `selectel_dbaas_roles_v1` с фильтром `datastore_type_id`.
+
+Нужна alpha-версия провайдера Selectel (`~> 4.0.0-alpha`), в которой у `selectel_dbaas_user_v1` поддерживаются `settings` и `roles`.
 
 # Запуск
 
@@ -50,21 +52,25 @@ cluster_status = "ACTIVE"
 db_name = "db"
 db_user = "user"
 db_user_password = "secret"
-db_user_settings = tolist([{
-  "conn_limit"                          = 20
+db_user_settings = {
+  "bypassrls"                           = "false"
+  "conn_limit"                          = "20"
   "default_transaction_isolation"       = "read committed"
-  "default_transaction_read_only"       = false
-  "idle_in_transaction_session_timeout" = 60000
-  "idle_session_timeout"                = 0
-  "lock_timeout"                        = 1000
-  "log_min_duration_statement"          = -1
+  "default_transaction_read_only"       = "false"
+  "idle_in_transaction_session_timeout" = "60000"
+  "lock_timeout"                        = "1000"
+  "log_min_duration_statement"          = "-1"
   "log_statement"                       = "none"
-  "login"                               = true
-  "statement_timeout"                   = 5000
+  "login"                               = "true"
+  "statement_timeout"                   = "5000"
   "synchronous_commit"                  = "on"
-  "temp_file_limit"                     = -1
-  "work_mem"                            = 4096
-}])
+  "temp_file_limit"                     = "-1"
+  "work_mem"                            = "4096"
+}
+db_user_roles = tolist([
+  "11111111-1111-1111-1111-111111111111",
+  "22222222-2222-2222-2222-222222222222",
+])
 master_host = "master.5579a1f3-12ab-4b6a-b926-49eb861feaa1.c.dbaas.selcloud.ru"
 ```
 

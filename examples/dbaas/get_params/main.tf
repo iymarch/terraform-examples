@@ -6,7 +6,7 @@ terraform {
   required_providers {
     selectel = {
       source  = "selectel/selectel"
-      version = "~> 4.0.0-aplha"
+      version = "~> 4.0.0-alpha"
     }
   }
 }
@@ -64,6 +64,19 @@ data "selectel_dbaas_datastore_type_v1" "postgresql" {
 data "selectel_dbaas_user_setting_parameter_v1" "user_setting_parameters" {
   project_id = var.project_id
   region     = var.region
+  filter {
+    datastore_type_id = data.selectel_dbaas_datastore_type_v1.postgresql.datastore_types[0].id
+  }
+}
+
+#########################################################
+# Каталог предопределённых ролей пользователя PostgreSQL
+#########################################################
+
+data "selectel_dbaas_roles_v1" "user_roles" {
+  project_id = var.project_id
+  region     = var.region
+
   filter {
     datastore_type_id = data.selectel_dbaas_datastore_type_v1.postgresql.datastore_types[0].id
   }
