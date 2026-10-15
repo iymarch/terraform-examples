@@ -5,8 +5,10 @@
 terraform {
   required_providers {
     selectel = {
-      source  = "selectel/selectel"
-      version = "~> 4.0.0-alpha"
+      source = "selectel/selectel"
+      # settings/roles у selectel_dbaas_user_v1 и data sources
+      # *_user_setting_parameter_v1 / *_roles_v1 появились в 9.3.0
+      version = "~> 9.3.0"
     }
     openstack = {
       source  = "terraform-provider-openstack/openstack"

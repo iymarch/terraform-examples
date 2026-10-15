@@ -9,7 +9,7 @@
 
 Роли задаются аргументом `roles` — списком ID предопределённых ролей. ID и имена доступных ролей можно получить data source-ом `selectel_dbaas_roles_v1` с фильтром `datastore_type_id`.
 
-Нужна alpha-версия провайдера Selectel (`~> 4.0.0-alpha`), в которой у `selectel_dbaas_user_v1` поддерживаются `settings` и `roles`.
+Нужен провайдер Selectel версии 9.3.0 или новее (`~> 9.3.0`) — в этой версии у `selectel_dbaas_user_v1` появились аргументы `settings` и `roles`, а также data sources `selectel_dbaas_user_setting_parameter_v1` и `selectel_dbaas_roles_v1`.
 
 # Запуск
 
