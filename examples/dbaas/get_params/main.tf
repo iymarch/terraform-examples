@@ -57,7 +57,7 @@ data "selectel_dbaas_datastore_type_v1" "postgresql" {
   region     = var.region
   filter {
     engine  = "postgresql"
-    version = "12"
+    version = "17"
   }
 }
 
