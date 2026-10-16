@@ -7,7 +7,7 @@
 
 Настройки задаются аргументом `settings` — картой «имя параметра → значение». Значения передаются строками и приводятся к нужному типу автоматически. В примере перечислены все параметры из каталога для PostgreSQL 17; каталог параметров для нужного типа кластера можно получить data source-ом `selectel_dbaas_user_setting_parameter_v1` с фильтром `datastore_id` или `datastore_type_id` — как в примере `get_params`. Ключ, убранный из `settings`, сбрасывается к значению по умолчанию из каталога. Аргумент `settings` доступен для кластеров PostgreSQL, 1C и TimescaleDB; в примерах MySQL и Redis его нет.
 
-Роли задаются аргументом `roles` — списком ID предопределённых ролей. ID и имена доступных ролей можно получить data source-ом `selectel_dbaas_roles_v1` с фильтром `datastore_type_id`.
+Роли задаются аргументом `roles` — списком ID предопределённых ролей. ID и имена доступных ролей можно получить data source-ом `selectel_dbaas_roles_v1` с фильтром `datastore_type_id`. Роль, убранная из `roles`, отзывается, новая — выдаётся.
 
 Нужен провайдер Selectel версии 9.3.0 или новее (`~> 9.3.0`) — в этой версии у `selectel_dbaas_user_v1` появились аргументы `settings` и `roles`, а также data sources `selectel_dbaas_user_setting_parameter_v1` и `selectel_dbaas_roles_v1`.
 
